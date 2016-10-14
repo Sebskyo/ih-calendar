@@ -45,6 +45,7 @@ int get_monthlen(int, int);
 // file interaction
 int load_conf();
 int initialize_file(char *, char*);
+int need_a_close_func();
 int fadd(struct entry *);
 
 #endif // IH_CALENDAR_CALENDAR_H

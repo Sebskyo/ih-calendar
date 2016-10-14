@@ -29,13 +29,15 @@ int main(void)
 	struct clock *clock = mkclock(9, 30);
 	struct entry *entry = mkentry(date, clock, "haha lol");
 	
-	printf("%d,%d,%d\n", date == NULL, clock == NULL, entry == NULL);
+	printf("%d\n\n", print_entry(entry));
 	
-	printf("%d\n", print_entry(entry));
-	printf("test.c:main():%d\n", load_conf());
-	initialize_file(NULL, "a");
+	int conf_status = load_conf();
+	printf("load_conf() return value: %d\n", conf_status);
+	if (conf_status == 0)
+		printf("init status: %d\n", initialize_file(NULL, "a"));
+		
+	//fadd(entry);
 	
-	fadd(entry);
-	
+	need_a_close_func();
 	return 0;
 }

@@ -7,7 +7,6 @@
 #include <string.h>
 
 #include "calendar.h"
-#include "config.h"
 
 int print_month(int argc, char **argv)
 {
@@ -61,7 +60,7 @@ int add_entry(int argc, char **argv)
 		clock = mkclock(hour, minute);
 	struct entry *entry = mkentry(date, clock, info);
 	
-	
+	return 0;
 }
 
 int main(int argc, char **argv)
