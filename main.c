@@ -69,6 +69,7 @@ int main(int argc, char **argv)
 	
 	load_conf();
 	
+	// TODO: move returns around and do some closing and stuff
 	if (strcmp(argv[1], "print") == 0) {
 		return print_month(argc-2, argv+2);
 	}

@@ -3,6 +3,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "calendar.h"
 
@@ -34,10 +35,18 @@ int main(void)
 	int conf_status = load_conf();
 	printf("load_conf() return value: %d\n", conf_status);
 	if (conf_status == 0)
-		printf("init status: %d\n", initialize_file(NULL, "a"));
+		printf("init status: %d\n", initialize_file(NULL, "ab"));
 		
-	//fadd(entry);
+	printf("dadd status: %d\n", dadd(entry));
+	finalize_file();
 	
-	need_a_close_func();
+	struct entry *loaded = malloc(sizeof(struct entry));
+	if (conf_status == 0)
+		printf("init status: %d\n", initialize_file(NULL, "rb"));
+	
+	printf("dload status: %d\n", dload(loaded));
+	print_entry(loaded);
+	finalize_file();
+	
 	return 0;
 }

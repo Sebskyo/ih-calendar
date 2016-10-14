@@ -87,27 +87,26 @@ int initialize_file(char *filename, char *mode)
 	return fp == NULL ? -1 : 0;
 }
 
-int need_a_close_func()
+int finalize_file()
 {
+	// TODO: do proper return values
 	if (fp)
 		fclose(fp);
 	return 0;
 }
 
-int fadd(struct entry *entry)
+int dadd(struct entry *entry)
 {
 	if (fp == NULL || entry == NULL) return 1;
 	
-	fprintf( // TODO: change to binary file
-		fp,
-		"%d,%d,%d,%d,%d,\"%s\";\n",
-		entry->date->year,
-		entry->date->month,
-		entry->date->day,
-		entry->clock == NULL ? -1 : entry->clock->hour,
-		entry->clock == NULL ? -1 : entry->clock->minute,
-		entry->info
-	);
+	int status = fwrite(entry, sizeof(struct entry), 1, fp);
+	return status < 1 ? 2 : 0;
+}
+
+int dload(struct entry *entry)
+{
+	if (fp == NULL || entry == NULL) return 1;
 	
-	return 0;
+	int status = fread(entry, sizeof(struct entry), 1, fp);
+	return status == 1 ? 0 : -1; // TODO: proper error handling
 }
