@@ -8,6 +8,24 @@
 
 #include "calendar.h"
 
+// taken from test.c TODO: delet this
+int print_entry(struct entry *e)
+{
+	if (e == NULL) return -1;
+	
+	printf(
+		"%2d/%2d/%4d %02d:%02d\n%s\n",
+		e->day,
+		e->month,
+		e->year,
+		e->hour,
+		e->minute,
+		e->info
+	);
+	
+	return 0;
+}
+
 int print_month(int argc, char **argv)
 {
 	if (argc < 2) return 1;
@@ -39,26 +57,42 @@ int add_entry(int argc, char **argv)
 {
 	if (argc < 4) return 1;
 	
+	if (initialize_file(NULL, "ab") != 0) return -1;
+	
 	int time_included = argc >= 6;
 	
 	// TODO: make sanity checks
-	unsigned int year, month, day, hour, minute;
+	int year, month, day, hour, minute;
 	year = atoi(argv[0]);
 	month = atoi(argv[1]);
 	day = atoi(argv[2]);
 	
-	if (time_included) {
-		hour = atoi(argv[3]);
-		minute = atoi(argv[4]);
-	}
+	hour	=	time_included ? atoi(argv[3]) : -1;
+	minute	=	time_included ? atoi(argv[4]) : -1;
 	
 	char *info = argv[time_included ? 5 : 3];
 	
-	struct date *date = mkdate(year, month, day);
-	struct clock *clock = NULL;
-	if (time_included)
-		clock = mkclock(hour, minute);
-	struct entry *entry = mkentry(date, clock, info);
+	struct entry *entry = mkentry(year, month, day, hour, minute, info);
+	print_entry(entry);
+	return dadd(entry);
+}
+
+int read_all(int argc, char **argv)
+{
+	if (initialize_file(NULL, "rb") != 0) return -1;
+	
+	struct node *root = NULL;
+	struct node *node;
+	struct entry e;
+	if (dloada(&root) != 0) return 1;
+	
+	for (node = root; node != NULL; node = node->next) {
+		e = node->entry;
+		printf("== \"%s\" ==\n", e.info);
+		printf("%d/%d/%d\n", e.year, e.month, e.day);
+		printf("%d:%d\n", e.hour, e.minute);
+		printf("\n");
+	}
 	
 	return 0;
 }
@@ -67,15 +101,20 @@ int main(int argc, char **argv)
 {
 	if (argc < 2) return 1;
 	
-	load_conf();
+	int conf_status = load_conf();
+	if (conf_status != 0) return 2;
 	
+	int status = 0;
 	// TODO: move returns around and do some closing and stuff
 	if (strcmp(argv[1], "print") == 0) {
-		return print_month(argc-2, argv+2);
+		status = print_month(argc-2, argv+2);
 	}
 	if (strcmp(argv[1], "add") == 0) {
-		initialize_file("testdata", "a");
-		return add_entry(argc-2, argv+2);
+		status = add_entry(argc-2, argv+2);
 	}
-	return -1;
+	if (strcmp(argv[1], "list") == 0) {
+		status = read_all(argc-2, argv+2);
+	}
+	finalize_file();
+	return status;
 }

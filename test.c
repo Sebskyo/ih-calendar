@@ -13,11 +13,11 @@ int print_entry(struct entry *e)
 	
 	printf(
 		"%2d/%2d/%4d %02d:%02d\n%s\n",
-		e->date->day,
-		e->date->month,
-		e->date->year,
-		e->clock->hour,
-		e->clock->minute,
+		e->day,
+		e->month,
+		e->year,
+		e->hour,
+		e->minute,
 		e->info
 	);
 	
@@ -26,9 +26,7 @@ int print_entry(struct entry *e)
 
 int main(void)
 {
-	struct date *date = mkdate(2016, 10, 19);
-	struct clock *clock = mkclock(9, 30);
-	struct entry *entry = mkentry(date, clock, "haha lol");
+	struct entry *entry = mkentry(2016, 10, 19, 9, 30, "haha lol");
 	
 	printf("%d\n\n", print_entry(entry));
 	
@@ -45,6 +43,7 @@ int main(void)
 		printf("init status: %d\n", initialize_file(NULL, "rb"));
 	
 	printf("dload status: %d\n", dload(loaded));
+	printf("loaded: %p\n", loaded);
 	print_entry(loaded);
 	finalize_file();
 	

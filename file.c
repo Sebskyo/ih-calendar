@@ -11,8 +11,7 @@
 
 #define MAXLINELEN	1024
 #define MAXKEYLEN	64
-#define MAXVALLEN	959
-//#define MAXVALLEN	(MAXLINELEN - MAXKEYLEN - 1)
+#define MAXVALLEN	(MAXLINELEN - MAXKEYLEN - 1)
 
 FILE *fp = NULL;
 char *data_filename;
@@ -32,7 +31,6 @@ int load_conf()
 		strcpy(conf_lctn, home);
 		strcat(conf_lctn, lcnt_const);
 	}
-	printf("found conf location:%s\n", conf_lctn);
 	conf = fopen(conf_lctn, "r");
 	if (conf == NULL) return 1;
 	
@@ -65,15 +63,11 @@ int load_conf()
 			}
 		}
 		
-		printf("k:\"%s\" | v:\"%s\"\n", key, value);
-		
 		if (strcmp(key, "data_file_lctn") == 0) {
 			data_filename = malloc(sizeof(char) * strlen(value)+1);
 			strcpy(data_filename, value);
-			printf("lcnt: \"%s\"\n", value);
 		}
 	}
-	printf("conf file parsed\n");
 	return 0;
 }
 
@@ -81,8 +75,6 @@ int initialize_file(char *filename, char *mode)
 {
 	int use_default = 0;
 	if (filename == NULL) use_default = 1;
-	printf("use_default? %d\n", use_default);
-	printf("default name: %s\n", data_filename);
 	fp = fopen(use_default ? data_filename : filename, mode);
 	return fp == NULL ? -1 : 0;
 }
@@ -98,15 +90,31 @@ int finalize_file()
 int dadd(struct entry *entry)
 {
 	if (fp == NULL || entry == NULL) return 1;
-	
 	int status = fwrite(entry, sizeof(struct entry), 1, fp);
 	return status < 1 ? 2 : 0;
 }
 
 int dload(struct entry *entry)
 {
-	if (fp == NULL || entry == NULL) return 1;
+	if (fp == NULL) return 1;
 	
 	int status = fread(entry, sizeof(struct entry), 1, fp);
 	return status == 1 ? 0 : -1; // TODO: proper error handling
+}
+
+int dloada(struct node **root)
+{
+	if (fp == NULL) return 1;
+	
+	struct entry *entry = malloc(sizeof(struct entry));
+	
+	int status = dload(entry);
+	if (status != 0) return 2;
+	*root = mknode(*entry);
+	
+	while ((status = dload(entry)) == 0) {
+		listadd(*root, *entry);
+	}
+	
+	return 0;
 }

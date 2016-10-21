@@ -6,35 +6,26 @@
 #ifndef IH_CALENDAR_CALENDAR_H
 #define IH_CALENDAR_CALENDAR_H
 
-// filename TODO: change this
-#define DATAFILE caldata.cld
+#define MAXINFO 1000
 
 // data structures
-struct date {
-	unsigned int year;
-	unsigned int month;
-	unsigned int day;
-};
-struct clock {
-	unsigned int hour;
-	unsigned int minute;
-};
 struct entry {
-	struct date *date;
-	struct clock *clock;
-	char *info;
+	int year;
+	int month;
+	int day;
+	int hour;
+	int minute;
+	char info[MAXINFO];
 };
 struct node {
-	struct entry *entry;
+	struct entry entry;
 	struct node *next;
 };
 
 // make structures
-struct date *mkdate(unsigned int, unsigned int, unsigned int);
-struct clock *mkclock(unsigned int, unsigned int);
-struct entry *mkentry(struct date *, struct clock *, char *);
-struct node *mknode(struct entry *);
-int *listadd(struct node *, struct entry *);
+struct entry *mkentry(int, int, int, int, int, char *);
+struct node *mknode(struct entry);
+int *listadd(struct node *, struct entry);
 
 // calendar functions
 int first_day(int, int);
@@ -48,5 +39,6 @@ int initialize_file(char *, char*);
 int finalize_file();
 int dadd(struct entry *);
 int dload(struct entry *);
+int dloada(struct node **root);
 
 #endif // IH_CALENDAR_CALENDAR_H
