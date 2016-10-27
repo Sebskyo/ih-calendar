@@ -45,7 +45,8 @@ int get_monthlen(int month, int isleap) // 1=JAN, 2=FEB, etc.
 	if (month < 8) {
 		monthlen =
 		  month == 2 ? isleap ? 29 : 28 : month%2 == 0 ? 30 : 31;
-	} else {
+	}
+	else {
 		monthlen = month%2 == 0 ? 31 : 30;
 	}
 	return monthlen;

@@ -36,7 +36,7 @@ int load_conf()
 	
 	char *buffer = malloc(sizeof(char) * MAXLINELEN);
 	memset(buffer, '\0', MAXLINELEN);
-	while(1)
+	while (1)
 	{
 		char *status = fgets(buffer, MAXLINELEN, conf);
 		if (status == NULL)
