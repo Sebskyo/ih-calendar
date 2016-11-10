@@ -29,6 +29,7 @@ int print_entry(struct entry *e)
 int print_month(int argc, char **argv)
 {
 	if (argc < 2) return 1;
+	if (initialize_file(NULL, "rb") != 0) return -1;
 	
 	// argument parsing
 	int year = atoi(argv[0]);
@@ -36,9 +37,18 @@ int print_month(int argc, char **argv)
 	
 	// setup
 	int day = first_day(year, month);
-	if (day == 7) return 1;
+	if (day == 7) return 2;
 	int monthlen;
-	if ((monthlen = get_monthlen(month, check_leap(year))) == 0) return 1;
+	if ((monthlen = get_monthlen(month, check_leap(year))) == 0) return 3;
+	struct node *root = NULL;
+	
+	// finding days with entries in month
+	fbym(&root, year, month);
+	int dwe[32] = {0}; // days with entries
+	struct node *node;
+	for (node = root; node != NULL; node = node->next) {
+		dwe[node->entry.day] = 1;
+	}
 	
 	// printing
 	printf("\nMo Tu We Th Fr Sa Su\n");
@@ -47,7 +57,8 @@ int print_month(int argc, char **argv)
 		printf("   ");
 	}
 	for (i = 1; i <= monthlen; i++) {
-		printf("%2d%c", i, (i+day)%7!=0?' ':'\n');
+		if (dwe[i]) printf("\x1B[7m");
+		printf("%2d\x1B[0m%c", i, (i+day)%7!=0?' ':'\n');
 	}
 	printf("\n\n");
 	return 0;

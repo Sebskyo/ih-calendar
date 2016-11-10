@@ -26,7 +26,7 @@ int print_entry(struct entry *e)
 
 int main(void)
 {
-	struct entry *entry = mkentry(2016, 10, 19, 9, 30, "haha lol");
+	/*struct entry *entry = mkentry(2016, 10, 19, 9, 30, "haha lol");
 	
 	printf("%d\n\n", print_entry(entry));
 	
@@ -45,7 +45,12 @@ int main(void)
 	printf("dload status: %d\n", dload(loaded));
 	printf("loaded: %p\n", loaded);
 	print_entry(loaded);
-	finalize_file();
+	finalize_file();*/
+	
+	struct entry *e1 = mkentry(2016, 11, 8, 23, 00, "haha lol");
+	struct entry *e2 = mkentry(2016, 10, 8, 23, 00, "sasdf");
+	struct entry cmpr = entrycmp(e1, e2);
+	print_entry(&cmpr);
 	
 	return 0;
 }

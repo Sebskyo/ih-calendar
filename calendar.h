@@ -22,10 +22,12 @@ struct node {
 	struct node *next;
 };
 
-// make structures
+// data processing
 struct entry *mkentry(int, int, int, int, int, char *);
+struct entry entrycmp(struct entry *, struct entry *);
 struct node *mknode(struct entry);
-int *listadd(struct node *, struct entry);
+int listadd(struct node *, struct entry);
+int fbym(struct node **, int, int);
 
 // calendar functions
 int first_day(int, int);
